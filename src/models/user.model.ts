@@ -3,6 +3,12 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import config from "config";
 
+export interface UserInput {
+    email: string;
+    name: string;
+    password: string;
+  }
+
 export interface UserDocument extends mongoose.Document {
     email: string;
     name: string;
@@ -11,6 +17,8 @@ export interface UserDocument extends mongoose.Document {
     updatedAt: Date;
     comparePassword: (candidatePassword: string) => Promise<boolean>;
 }
+
+
 
 const userSchema = new mongoose.Schema({
     email: {type: "string", required: true, unique: true},
@@ -42,6 +50,6 @@ userSchema.methods.comparePassword = async function(candidatePassword: string): 
     return await bcrypt.compare(candidatePassword, user.password).catch((e) => false)
 }
 
-const UserModel = mongoose.model('User', userSchema);
+const UserModel = mongoose.model<UserDocument>('User', userSchema);
 
 export default UserModel;
